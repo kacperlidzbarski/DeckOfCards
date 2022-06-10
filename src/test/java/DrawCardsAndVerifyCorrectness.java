@@ -2,10 +2,8 @@ import model.Cards;
 import model.Deck;
 import org.junit.Assert;
 import org.junit.Test;
-
 import java.util.HashMap;
 import java.util.List;
-
 import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
@@ -28,7 +26,8 @@ public class DrawCardsAndVerifyCorrectness {
                 Deck shuffleCardsResponse = given().
                                                     pathParam("deck_count",1).
                                                     baseUri("https://deckofcardsapi.com/api/deck/new/shuffle").
-                                            get("/?deck_count={deck_count}").
+                                            when().
+                                                    get("/?deck_count={deck_count}").
                                             then().
                                                     body(matchesJsonSchemaInClasspath("Schemas/DeckSchema.json")) //verify schema
                                                     .extract().body().as(Deck.class); // create an object from Body
@@ -48,7 +47,8 @@ public class DrawCardsAndVerifyCorrectness {
                 Cards cardsInHand = given().
                                             pathParam("count",52).pathParam("deck_id",deckId).
                                             baseUri("https://deckofcardsapi.com/api/deck").
-                                    get("/{deck_id}/draw/?count={count}").
+                                    when().
+                                            get("/{deck_id}/draw/?count={count}").
                                     then().
                                             extract().body().as(Cards.class);
 
@@ -61,13 +61,6 @@ public class DrawCardsAndVerifyCorrectness {
                 }
                 Assert.assertEquals(cardsInHand.getRemaining(),0,0); //Assert that you have no cards remaining
                 Assert.assertTrue(CardWasFound);    //Assert that you hold a specific Card
-
-
-
-
-
-
-
 
 
     }
